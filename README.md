@@ -5,7 +5,7 @@ https://www.michaelreitbauer.at/blog
 # Unterstützte Zähler
 
 -   [Kaifa Drehstromzähler MA309 (EVN)](#HSmartMeterEVN)
--   [Kaifa Drehstromzähler MA309MH4LAT1 (Vorarlberg)](#HSmartMeterVKW)
+-   [Kaifa Drehstromzähler MA309M<sub>H4LAT1</sub> (Vorarlberg)](#HSmartMeterVKW)
 
 # <a id="HSmartMeterEVN"></a>SmartMeterEVN
 
@@ -36,7 +36,7 @@ Smart Meter werden von der Netz NÖ GmbH eingebaut, auf Basis der gesetzlichen F
 -   Kaifa Drehstromzähler MA309
 
 # <a id="HSmartMeterVKW"></a>SmartMeterVKW
-Das Skript `SmartMeterVKW.py` ermöglicht den Zugriff auf den Vorarlberger Smartmeter vom Typ `MA309M`<sub>`H4LAT1`</sub>. Der Code könnte auch für Zähler des gleichen Typs außerhalb von Vorarlberg funktionieren.
+Das Skript `SmartMeterVKW.py` ermöglicht den Zugriff auf den Vorarlberger Smartmeter vom Typ MA309M<sub>H4LAT1</sub>. Der Code könnte auch für Zähler des gleichen Typs außerhalb von Vorarlberg funktionieren.
 
 ## Getting Started
 
@@ -47,12 +47,12 @@ Das Skript `SmartMeterVKW.py` ermöglicht den Zugriff auf den Vorarlberger Smart
 
 ### Voraussetzungen Software
 
-- Auch für dieses Skript werden wieder die gleichen Requirements wie schon oben beschrieben benötigt.
+- Die Benötigten Dependencies können wie bereits oben beschrieben mit dem Befehl `pip install -r requirements.txt` installiert werden.
 
 #### Anpassungen
 
--   Es muss eine config.json Datei nach Vorlage der config.example.json Datei angelegt werden, die die nötigen Informationen erhält.
--   Statt des Hauptscripts muss nun die Datei SmartMeterVKW.py ausgeführt werden.
+-   Es muss eine `config.json` Datei nach Vorlage der `config.example.json` Datei angelegt werden, die die nötigen Informationen erhält.
+-   Statt des Hauptscripts wird nun die Datei `SmartMeterVKW.py` ausgeführt werden.
 
 ### Zähler Hersteller
 
