@@ -5,3 +5,4 @@ paho-mqtt
 lxml
 pyserial
 cryptography==37.0.2
+pycryptodomex
