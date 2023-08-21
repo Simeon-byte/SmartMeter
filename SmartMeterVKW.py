@@ -23,9 +23,9 @@ useMQTT = config["useMQTT"]
 #MQTT Broker IP adresse Eingeben ohne Port!
 if useMQTT and config["mqttConfig"]:
     mqttBroker = config["mqttConfig"]["mqttBroker"] or "localhost"
-    mqttuser = config["mqttConfig"]["mqttuser"] or ""
-    mqttpasswort = config["mqttConfig"]["mqttpasswort"] or ""
-    mqttport = config["mqttConfig"]["mqttport"] or 1883
+    mqttuser = config["mqttConfig"]["mqttUser"] or ""
+    mqttpasswort = config["mqttConfig"]["mqttPassword"] or ""
+    mqttport = config["mqttConfig"]["mqttPort"] or 1883
 
 #Comport Config/Init
 comport = config["comport"] or '/dev/ttyUSB0'
