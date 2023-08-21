@@ -21,20 +21,23 @@ printValue = config["printValue"]
 #MQTT Verwenden (True | False)
 useMQTT = config["useMQTT"]
 #Custom MQTT Credentials or use env provided
-customMQTT = config["customMQTT"]
+useEnvMqttConfig = config["useEnvMqttConfig"]
 #MQTT Broker IP adresse Eingeben ohne Port!
 if useMQTT:
-    if customMQTT and config["mqttConfig"]:
-        mqttBroker = config["mqttConfig"]["mqttBroker"] or "localhost"
-        mqttuser = config["mqttConfig"]["mqttUser"] or ""
-        mqttpasswort = config["mqttConfig"]["mqttPassword"] or ""
-        mqttport = config["mqttConfig"]["mqttPort"] or 1883
-    else:
-        mqttBroker = os.environ["MQTT_BROKER"] or "localhost"
-        mqttuser = os.environ["MQTT_USER"]  or ""
-        mqttpasswort = os.environ["MQTT_PASSWORD"]  or ""
-        mqttport = os.environ["MQTT_PORT"] or 1883
-
+    try:
+        if (not useEnvMqttConfig) and config["mqttConfig"]:
+            mqttBroker = config["mqttConfig"]["mqttBroker"] or "localhost"
+            mqttuser = config["mqttConfig"]["mqttUser"] or ""
+            mqttpasswort = config["mqttConfig"]["mqttPassword"] or ""
+            mqttport = config["mqttConfig"]["mqttPort"] or 1883
+        else:
+            mqttBroker = os.environ["MQTT_BROKER"] or "localhost"
+            mqttuser = os.environ["MQTT_USER"]  or ""
+            mqttpasswort = os.environ["MQTT_PASSWORD"]  or ""
+            mqttport = os.environ["MQTT_PORT"] or 1883
+    except KeyError as e:
+        print(f"Error: Missing configuration or environment variable: {e}")
+        sys.exit()
 #Comport Config/Init
 comport = config["comport"] or '/dev/ttyUSB0'
 
