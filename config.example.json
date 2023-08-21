@@ -3,6 +3,7 @@
     "comport": "/dev/ttyUSB0",
     "printValue": true,
     "useMQTT": false,
+    "useEnvMqttConfig": true,
     "mqttConfig": {
         "mqttBroker": "",
         "mqttPort": 1883,
