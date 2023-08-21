@@ -10,7 +10,7 @@ import os
 import json
 
 f = open("config.json", "r")
-config = json.loads(f)
+config = json.load(f)
 
 # Environment Variable setzen, damit der Fehler nicht auf der Console Kommt
 os.environ['TERM'] = 'xterm'
@@ -22,13 +22,13 @@ printValue = config["printValue"]
 useMQTT = config["useMQTT"]
 #MQTT Broker IP adresse Eingeben ohne Port!
 if useMQTT and config["mqttConfig"]:
-    mqttBroker = config["mqttConfig"]["mqttBroker"] | "localhost"
-    mqttuser = config["mqttConfig"]["mqttuser"] | ""
-    mqttpasswort = config["mqttConfig"]["mqttpasswort"] | ""
-    mqttport = config["mqttConfig"]["mqttport"] | 1883
+    mqttBroker = config["mqttConfig"]["mqttBroker"] or "localhost"
+    mqttuser = config["mqttConfig"]["mqttuser"] or ""
+    mqttpasswort = config["mqttConfig"]["mqttpasswort"] or ""
+    mqttport = config["mqttConfig"]["mqttport"] or 1883
 
 #Comport Config/Init
-comport = config["comport"] | '/dev/ttyUSB0'
+comport = config["comport"] or '/dev/ttyUSB0'
 
 # EVN Schlüssel eingeben zB. “36C66639E48A8CA4D6BC8B282A793BBB”
 key = config["key"]
