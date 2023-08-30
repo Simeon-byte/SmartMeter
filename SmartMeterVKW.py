@@ -9,7 +9,7 @@ import paho.mqtt.client as mqtt
 import os
 import json
 
-f = open("config.json", "r")
+f = open("config/config.json", "r")
 config = json.load(f)
 
 # Environment Variable setzen, damit der Fehler nicht auf der Console Kommt
