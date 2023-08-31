@@ -1,5 +1,9 @@
-
+.env
 .vscode/settings.json
 config.json
 get-docker.sh
-data/
+data/grafana/*
+!data/grafana/
+data/influxDB/*
+data/nodeRed/*
+!/data/nodeRed/flows.json

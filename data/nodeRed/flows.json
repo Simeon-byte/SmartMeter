@@ -1,0 +1,1159 @@
+[
+    {
+        "id": "8f86e1d689845248",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "1aee3213a7893e0e",
+        "type": "mqtt-broker",
+        "name": "Mosquitto MQTT Broker",
+        "broker": "mosquitto",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "9d9ad3f4.49ce7",
+        "type": "influxdb",
+        "hostname": "influxdb",
+        "port": "8086",
+        "protocol": "http",
+        "database": "SmartMeter",
+        "name": "InfluxDB",
+        "usetls": false,
+        "tls": "",
+        "influxdbVersion": "2.0",
+        "url": "http://influxdb:8086",
+        "rejectUnauthorized": false
+    },
+    {
+        "id": "ae614971a2fbe859",
+        "type": "mqtt in",
+        "z": "8f86e1d689845248",
+        "name": "",
+        "topic": "Smartmeter/WirkenergieP",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "1aee3213a7893e0e",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 170,
+        "y": 560,
+        "wires": [
+            [
+                "64804af0d6c367ab"
+            ]
+        ]
+    },
+    {
+        "id": "64804af0d6c367ab",
+        "type": "function",
+        "z": "8f86e1d689845248",
+        "name": "Umrechnung von Wh in kWh",
+        "func": "var Wert = msg.payload;\nmsg.payload = Wert/1000;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 480,
+        "y": 560,
+        "wires": [
+            [
+                "9d853d185e198651"
+            ]
+        ]
+    },
+    {
+        "id": "476d1a4fba7d47de",
+        "type": "mqtt in",
+        "z": "8f86e1d689845248",
+        "name": "",
+        "topic": "Smartmeter/WirkenergieN",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "1aee3213a7893e0e",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 170,
+        "y": 620,
+        "wires": [
+            [
+                "0030dbadcb923388"
+            ]
+        ]
+    },
+    {
+        "id": "0030dbadcb923388",
+        "type": "function",
+        "z": "8f86e1d689845248",
+        "name": "Umrechnung von Wh in kWh",
+        "func": "var Wert = msg.payload;\nmsg.payload = Wert/1000;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 480,
+        "y": 620,
+        "wires": [
+            [
+                "e65d91553e96444d"
+            ]
+        ]
+    },
+    {
+        "id": "0e7beb4c71d1bf8c",
+        "type": "mqtt in",
+        "z": "8f86e1d689845248",
+        "name": "",
+        "topic": "Smartmeter/MomentanleistungP",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "1aee3213a7893e0e",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 190,
+        "y": 680,
+        "wires": [
+            [
+                "10dd198d064aa609"
+            ]
+        ]
+    },
+    {
+        "id": "564ceec19ee193f5",
+        "type": "mqtt in",
+        "z": "8f86e1d689845248",
+        "name": "",
+        "topic": "Smartmeter/MomentanleistungN",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "1aee3213a7893e0e",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 190,
+        "y": 740,
+        "wires": [
+            [
+                "7f841ae0b201ee0b"
+            ]
+        ]
+    },
+    {
+        "id": "f1abfa0b30c582eb",
+        "type": "mqtt in",
+        "z": "8f86e1d689845248",
+        "name": "",
+        "topic": "Smartmeter/SpannungL1",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "1aee3213a7893e0e",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 170,
+        "y": 200,
+        "wires": [
+            [
+                "8c558bd336770214"
+            ]
+        ]
+    },
+    {
+        "id": "6339b5e5e00a0364",
+        "type": "mqtt in",
+        "z": "8f86e1d689845248",
+        "name": "",
+        "topic": "Smartmeter/SpannungL2",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "1aee3213a7893e0e",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 170,
+        "y": 260,
+        "wires": [
+            [
+                "5a1e0ad92f572939"
+            ]
+        ]
+    },
+    {
+        "id": "96a7405b7205b504",
+        "type": "mqtt in",
+        "z": "8f86e1d689845248",
+        "name": "",
+        "topic": "Smartmeter/SpannungL3",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "1aee3213a7893e0e",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 170,
+        "y": 320,
+        "wires": [
+            [
+                "0d8fb616de4285a7"
+            ]
+        ]
+    },
+    {
+        "id": "01e21305cb1c50c3",
+        "type": "mqtt in",
+        "z": "8f86e1d689845248",
+        "name": "",
+        "topic": "Smartmeter/StromL1",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "1aee3213a7893e0e",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 150,
+        "y": 380,
+        "wires": [
+            [
+                "d6d7a3e4dfe8e7f4"
+            ]
+        ]
+    },
+    {
+        "id": "54fbc2eca9446a07",
+        "type": "mqtt in",
+        "z": "8f86e1d689845248",
+        "name": "",
+        "topic": "Smartmeter/StromL2",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "1aee3213a7893e0e",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 150,
+        "y": 440,
+        "wires": [
+            [
+                "3abbc7d175816d1a"
+            ]
+        ]
+    },
+    {
+        "id": "d747cf7ea3a8e02d",
+        "type": "mqtt in",
+        "z": "8f86e1d689845248",
+        "name": "",
+        "topic": "Smartmeter/StromL3",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "1aee3213a7893e0e",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 150,
+        "y": 500,
+        "wires": [
+            [
+                "8d5098107fe9755a"
+            ]
+        ]
+    },
+    {
+        "id": "12f5c960c1ddf00e",
+        "type": "mqtt in",
+        "z": "8f86e1d689845248",
+        "name": "",
+        "topic": "Smartmeter/BlindLeistungP",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "1aee3213a7893e0e",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 180,
+        "y": 800,
+        "wires": [
+            [
+                "c0d0a23772348574"
+            ]
+        ]
+    },
+    {
+        "id": "8c558bd336770214",
+        "type": "function",
+        "z": "8f86e1d689845248",
+        "name": "Runden auf 2 Nachkommastellen",
+        "func": "var Wert = msg.payload; // Wert einlesen aus dem Payload\nmsg.payload = parseFloat(Wert).toFixed(2) //Wert auf 2 Nachkommerstellen runden\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 200,
+        "wires": [
+            [
+                "28e42070147af8b3"
+            ]
+        ]
+    },
+    {
+        "id": "5a1e0ad92f572939",
+        "type": "function",
+        "z": "8f86e1d689845248",
+        "name": "Runden auf 2 Nachkommastellen",
+        "func": "var Wert = msg.payload;\nmsg.payload = parseFloat(Wert).toFixed(2)\nreturn msg;\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 260,
+        "wires": [
+            [
+                "cbb1d2460eaad09f"
+            ]
+        ]
+    },
+    {
+        "id": "0d8fb616de4285a7",
+        "type": "function",
+        "z": "8f86e1d689845248",
+        "name": "Runden auf 2 Nachkommastellen",
+        "func": "var Wert = msg.payload;\nmsg.payload = parseFloat(Wert).toFixed(2)\nreturn msg;\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 320,
+        "wires": [
+            [
+                "64f27478a6835528"
+            ]
+        ]
+    },
+    {
+        "id": "9d853d185e198651",
+        "type": "change",
+        "z": "8f86e1d689845248",
+        "name": "Überschrift für Objekt (WirkerngieP)",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "WirkerngieP",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 850,
+        "y": 560,
+        "wires": [
+            [
+                "8d0f0848224b455d"
+            ]
+        ]
+    },
+    {
+        "id": "e65d91553e96444d",
+        "type": "change",
+        "z": "8f86e1d689845248",
+        "name": "Überschrift für Objekt (WirkenergieN)",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "WirkenergieN",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 850,
+        "y": 620,
+        "wires": [
+            [
+                "c02273d2c96e97c7"
+            ]
+        ]
+    },
+    {
+        "id": "10dd198d064aa609",
+        "type": "change",
+        "z": "8f86e1d689845248",
+        "name": "Überschrift für Objekt (MomentanleistungP)",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "MomentanleistungP",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 870,
+        "y": 680,
+        "wires": [
+            [
+                "5d6bced10944fe3e"
+            ]
+        ]
+    },
+    {
+        "id": "7f841ae0b201ee0b",
+        "type": "change",
+        "z": "8f86e1d689845248",
+        "name": "Überschrift für Objekt (MomentanleistungN)",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "MomentanleistungN",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 870,
+        "y": 740,
+        "wires": [
+            [
+                "fc6f511a4280c52b"
+            ]
+        ]
+    },
+    {
+        "id": "28e42070147af8b3",
+        "type": "change",
+        "z": "8f86e1d689845248",
+        "name": "Überschrift für Objekt (SpannungL1)",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "SpannungL1",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 850,
+        "y": 200,
+        "wires": [
+            [
+                "e57a1fd256d11f9d"
+            ]
+        ]
+    },
+    {
+        "id": "cbb1d2460eaad09f",
+        "type": "change",
+        "z": "8f86e1d689845248",
+        "name": "Überschrift für Objekt (SpannungL2)",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "SpannungL2",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 850,
+        "y": 260,
+        "wires": [
+            [
+                "30f4aca5c69eedb1"
+            ]
+        ]
+    },
+    {
+        "id": "64f27478a6835528",
+        "type": "change",
+        "z": "8f86e1d689845248",
+        "name": "Überschrift für Objekt (SpannungL3)",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "SpannungL3",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 850,
+        "y": 320,
+        "wires": [
+            [
+                "11918ef1667035d6"
+            ]
+        ]
+    },
+    {
+        "id": "21800c4611edcc32",
+        "type": "change",
+        "z": "8f86e1d689845248",
+        "name": "Überschrift für Objekt (StromL1)",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "StromL1",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 830,
+        "y": 380,
+        "wires": [
+            [
+                "20d349e2939e9160"
+            ]
+        ]
+    },
+    {
+        "id": "8d3db1684b482f47",
+        "type": "change",
+        "z": "8f86e1d689845248",
+        "name": "Überschrift für Objekt (StromL2)",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "StromL2",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 830,
+        "y": 440,
+        "wires": [
+            [
+                "9f90da2ac4befdb1"
+            ]
+        ]
+    },
+    {
+        "id": "e09b0b5f6b8fb460",
+        "type": "change",
+        "z": "8f86e1d689845248",
+        "name": "Überschrift für Objekt (StromL3)",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "StromL3",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 830,
+        "y": 500,
+        "wires": [
+            [
+                "d32e9c9bedc1dcab"
+            ]
+        ]
+    },
+    {
+        "id": "c0d0a23772348574",
+        "type": "change",
+        "z": "8f86e1d689845248",
+        "name": "Überschrift für Objekt (BlindleistungP)",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "BlindleistungP",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 850,
+        "y": 800,
+        "wires": [
+            [
+                "cb5717b4ccdec98e"
+            ]
+        ]
+    },
+    {
+        "id": "d6d7a3e4dfe8e7f4",
+        "type": "function",
+        "z": "8f86e1d689845248",
+        "name": "Runden auf 2 Nachkommastellen",
+        "func": "var Wert = msg.payload; // Wert einlesen aus dem Payload\nmsg.payload = parseFloat(Wert).toFixed(2) //Wert auf 2 Nachkommerstellen runden\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 380,
+        "wires": [
+            [
+                "21800c4611edcc32"
+            ]
+        ]
+    },
+    {
+        "id": "3abbc7d175816d1a",
+        "type": "function",
+        "z": "8f86e1d689845248",
+        "name": "Runden auf 2 Nachkommastellen",
+        "func": "var Wert = msg.payload; // Wert einlesen aus dem Payload\nmsg.payload = parseFloat(Wert).toFixed(2) //Wert auf 2 Nachkommerstellen runden\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 440,
+        "wires": [
+            [
+                "8d3db1684b482f47"
+            ]
+        ]
+    },
+    {
+        "id": "8d5098107fe9755a",
+        "type": "function",
+        "z": "8f86e1d689845248",
+        "name": "Runden auf 2 Nachkommastellen",
+        "func": "var Wert = msg.payload; // Wert einlesen aus dem Payload\nmsg.payload = parseFloat(Wert).toFixed(2) //Wert auf 2 Nachkommerstellen runden\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 500,
+        "wires": [
+            [
+                "e09b0b5f6b8fb460"
+            ]
+        ]
+    },
+    {
+        "id": "8d0f0848224b455d",
+        "type": "function",
+        "z": "8f86e1d689845248",
+        "name": "Wert in eine Zahl umwandeln",
+        "func": "msg.payload = Number(msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1200,
+        "y": 560,
+        "wires": [
+            [
+                "454b964139d73f1c"
+            ]
+        ]
+    },
+    {
+        "id": "c02273d2c96e97c7",
+        "type": "function",
+        "z": "8f86e1d689845248",
+        "name": "Wert in eine Zahl umwandeln",
+        "func": "msg.payload = Number(msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1200,
+        "y": 620,
+        "wires": [
+            [
+                "454b964139d73f1c"
+            ]
+        ]
+    },
+    {
+        "id": "5d6bced10944fe3e",
+        "type": "function",
+        "z": "8f86e1d689845248",
+        "name": "Wert in eine Zahl umwandeln",
+        "func": "msg.payload = Number(msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1200,
+        "y": 680,
+        "wires": [
+            [
+                "454b964139d73f1c"
+            ]
+        ]
+    },
+    {
+        "id": "fc6f511a4280c52b",
+        "type": "function",
+        "z": "8f86e1d689845248",
+        "name": "Wert in eine Zahl umwandeln",
+        "func": "msg.payload = Number(msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1200,
+        "y": 740,
+        "wires": [
+            [
+                "454b964139d73f1c"
+            ]
+        ]
+    },
+    {
+        "id": "e57a1fd256d11f9d",
+        "type": "function",
+        "z": "8f86e1d689845248",
+        "name": "Wert in eine Zahl umwandeln",
+        "func": "msg.payload = Number(msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1200,
+        "y": 200,
+        "wires": [
+            [
+                "454b964139d73f1c"
+            ]
+        ]
+    },
+    {
+        "id": "30f4aca5c69eedb1",
+        "type": "function",
+        "z": "8f86e1d689845248",
+        "name": "Wert in eine Zahl umwandeln",
+        "func": "msg.payload = Number(msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1200,
+        "y": 260,
+        "wires": [
+            [
+                "454b964139d73f1c"
+            ]
+        ]
+    },
+    {
+        "id": "11918ef1667035d6",
+        "type": "function",
+        "z": "8f86e1d689845248",
+        "name": "Wert in eine Zahl umwandeln",
+        "func": "msg.payload = Number(msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1200,
+        "y": 320,
+        "wires": [
+            [
+                "454b964139d73f1c"
+            ]
+        ]
+    },
+    {
+        "id": "20d349e2939e9160",
+        "type": "function",
+        "z": "8f86e1d689845248",
+        "name": "Wert in eine Zahl umwandeln",
+        "func": "msg.payload = Number(msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1200,
+        "y": 380,
+        "wires": [
+            [
+                "454b964139d73f1c"
+            ]
+        ]
+    },
+    {
+        "id": "9f90da2ac4befdb1",
+        "type": "function",
+        "z": "8f86e1d689845248",
+        "name": "Wert in eine Zahl umwandeln",
+        "func": "msg.payload = Number(msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1200,
+        "y": 440,
+        "wires": [
+            [
+                "454b964139d73f1c"
+            ]
+        ]
+    },
+    {
+        "id": "d32e9c9bedc1dcab",
+        "type": "function",
+        "z": "8f86e1d689845248",
+        "name": "Wert in eine Zahl umwandeln",
+        "func": "msg.payload = Number(msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1200,
+        "y": 500,
+        "wires": [
+            [
+                "454b964139d73f1c"
+            ]
+        ]
+    },
+    {
+        "id": "cb5717b4ccdec98e",
+        "type": "function",
+        "z": "8f86e1d689845248",
+        "name": "Wert in eine Zahl umwandeln",
+        "func": "msg.payload = Number(msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1200,
+        "y": 800,
+        "wires": [
+            [
+                "454b964139d73f1c"
+            ]
+        ]
+    },
+    {
+        "id": "454b964139d73f1c",
+        "type": "join",
+        "z": "8f86e1d689845248",
+        "name": "Objekt erzeugen",
+        "mode": "custom",
+        "build": "object",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "14",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 1650,
+        "y": 440,
+        "wires": [
+            [
+                "5e511f75c1c9e747",
+                "5dcdf876baeec912"
+            ]
+        ]
+    },
+    {
+        "id": "5e511f75c1c9e747",
+        "type": "debug",
+        "z": "8f86e1d689845248",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1810,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "5dcdf876baeec912",
+        "type": "influxdb out",
+        "z": "8f86e1d689845248",
+        "influxdb": "9d9ad3f4.49ce7",
+        "name": "",
+        "measurement": "Leistungsdaten",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "organization",
+        "bucket": "SmartMeter",
+        "x": 1990,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "4a8a5f7b5f5c24dd",
+        "type": "mqtt in",
+        "z": "8f86e1d689845248",
+        "name": "",
+        "topic": "Smartmeter/Zeit",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "1aee3213a7893e0e",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 140,
+        "y": 140,
+        "wires": [
+            [
+                "351967a66b469219"
+            ]
+        ]
+    },
+    {
+        "id": "351967a66b469219",
+        "type": "function",
+        "z": "8f86e1d689845248",
+        "name": "string zu Date(ms)",
+        "func": "var date = msg.payload;\nmsg.payload = Date.parse(date)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 450,
+        "y": 140,
+        "wires": [
+            [
+                "86a54ea3cacdc976"
+            ]
+        ]
+    },
+    {
+        "id": "86a54ea3cacdc976",
+        "type": "change",
+        "z": "8f86e1d689845248",
+        "name": "Überschrift für Objekt (Zeit)",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Zeit",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1200,
+        "y": 140,
+        "wires": [
+            [
+                "454b964139d73f1c"
+            ]
+        ]
+    },
+    {
+        "id": "0b72ebccfc6a8320",
+        "type": "mqtt in",
+        "z": "8f86e1d689845248",
+        "name": "",
+        "topic": "Smartmeter/Zaehlernummer",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "1aee3213a7893e0e",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 1200,
+        "y": 920,
+        "wires": [
+            [
+                "454b964139d73f1c"
+            ]
+        ]
+    },
+    {
+        "id": "12ee780908683207",
+        "type": "mqtt in",
+        "z": "8f86e1d689845248",
+        "name": "",
+        "topic": "Smartmeter/BlindLeistungN",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "1aee3213a7893e0e",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 180,
+        "y": 860,
+        "wires": [
+            [
+                "649b34997348e83c"
+            ]
+        ]
+    },
+    {
+        "id": "649b34997348e83c",
+        "type": "change",
+        "z": "8f86e1d689845248",
+        "name": "Überschrift für Objekt (BlindleistungN)",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "BlindleistungN",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 850,
+        "y": 860,
+        "wires": [
+            [
+                "bb6fff68537cdef6"
+            ]
+        ]
+    },
+    {
+        "id": "bb6fff68537cdef6",
+        "type": "function",
+        "z": "8f86e1d689845248",
+        "name": "Wert in eine Zahl umwandeln",
+        "func": "msg.payload = Number(msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1200,
+        "y": 860,
+        "wires": [
+            [
+                "454b964139d73f1c"
+            ]
+        ]
+    }
+]
