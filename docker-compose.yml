@@ -1,0 +1,99 @@
+version: '3.8'
+services:
+  # Mosquitto MQTT Broker
+  mosquitto:
+    container_name: smartmeter_mosquitto
+    image: eclipse-mosquitto
+    ports:
+      - $mosquittoPort:1883
+      - '9001:9001'
+    # healthcheck:
+    #   test: ["CMD", "mosquitto_sub", "-t", "$$SYS/#", "-C", "1", "-i", "healthcheck", "-W", "3"]
+    #   interval: 20s
+    #   timeout: 10s
+    #   retries: 5
+    #   start_period: 20s
+    volumes:
+      - './config/mosquitto.conf:/mosquitto/config/mosquitto.conf'
+    networks:
+      - smartmeterNetwork
+  
+  
+  influxdb:
+    container_name: smartmeter_influxdb
+    image: 'influxdb:1.8'
+    # healthcheck:
+    #   test: "curl -f http://localhost:8086/ping" 
+    #   interval: 5s 
+    #   timeout: 10s 
+    #   retries: 5 
+    ports:
+      - $influxPort:8086
+    volumes:
+      - $PWD/data/influxDB:/var/lib/influxdb
+    environment:
+      - INFLUXDB_DATA_ENGINE=tsm1
+      - INFLUXDB_REPORTING_DISABLED=false
+      - INFLUXDB_ADMIN_USER=${influxdbAdminUser}
+      - INFLUXDB_ADMIN_PASSWORD=${influxdbAdminPassword}
+      - INFLUXDB_USER=${influxdbUser}
+      - INFLUXDB_USER_PASSWORD=${influxdbUserPassword}
+      - INFLUXDB_DB=${influxdbDatabase}
+      - INFLUXDB_HTTP_LOG_ENABLED=false
+      - INFLUXDB_META_LOGGING_ENABLED=false
+      - INFLUXDB_DATA_QUERY_LOG_ENABLED=false
+      - INFLUXDB_LOGGING_LEVEL=warn
+      - TZ=${TZ}
+    networks:
+      - smartmeterNetwork
+
+  grafana:
+    container_name: smartmeter_grafana
+    image: grafana/grafana:10.0.3
+    ports: 
+      - $grafanaPort:3000
+    user: "1000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=$grafanaRootPassword
+    volumes:
+      - $PWD/data/grafana:/var/lib/grafana
+    networks:
+      - smartmeterNetwork
+
+  node_red:
+    container_name: smartmeter_node_red
+    build:
+      context: .
+      dockerfile: Dockerfile-NodeRed
+
+    depends_on:
+      - mosquitto
+      - influxdb
+    ports:
+      - $nodeRedPort:1880
+    volumes:
+      -  $PWD/data/nodeRed:/data
+      # -  $PWD/config/flows.json:/data/flows.json
+    networks:
+      - smartmeterNetwork
+
+  # Python SmartMeter reader Script
+  reader:
+    container_name: smartmeter_pyreader
+    depends_on:
+      - mosquitto
+    build: 
+      context: .
+    privileged: true
+    environment:
+      - MQTT_BROKER=mosquitto
+      - MQTT_PORT=$mosquittoPort
+      - MQTT_USER=''
+      - MQTT_PASSWORD=''
+    networks:
+      - smartmeterNetwork
+  
+networks:
+  smartmeterNetwork:
+    driver: bridge
+    external: true

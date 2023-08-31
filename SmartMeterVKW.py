@@ -26,18 +26,27 @@ useEnvMqttConfig = config["useEnvMqttConfig"]
 if useMQTT:
     try:
         if (not useEnvMqttConfig) and config["mqttConfig"]:
+            if printValue:
+                print("Using Config File")
             mqttBroker = config["mqttConfig"]["mqttBroker"] or "localhost"
             mqttuser = config["mqttConfig"]["mqttUser"] or ""
             mqttpasswort = config["mqttConfig"]["mqttPassword"] or ""
             mqttport = config["mqttConfig"]["mqttPort"] or 1883
         else:
-            mqttBroker = os.environ["MQTT_BROKER"] or "localhost"
-            mqttuser = os.environ["MQTT_USER"]  or ""
-            mqttpasswort = os.environ["MQTT_PASSWORD"]  or ""
-            mqttport = os.environ["MQTT_PORT"] or 1883
+            if printValue:
+                print("Using EnvConfig")
+            mqttBroker = os.getenv("MQTT_BROKER", "localhost")
+            mqttuser = os.getenv("MQTT_USER")
+            mqttpasswort = os.getenv("MQTT_PASSWORD")
+            mqttport = int(os.getenv("MQTT_PORT", 1883))
     except KeyError as e:
         print(f"Error: Missing configuration or environment variable: {e}")
         sys.exit()
+    if (printValue):
+        print("mqttBroker", mqttBroker)
+        print("mqttuser", mqttuser)
+        print("mqttpasswort", mqttpasswort)
+        print("mqttport", mqttport)
 #Comport Config/Init
 comport = config["comport"] or '/dev/ttyUSB0'
 
@@ -46,7 +55,7 @@ key = config["key"]
 key=binascii.unhexlify(key)
 
 def clear():
-    if printValue:
+    if printValue and not useEnvMqttConfig:
         if name == 'nt':
             _ = system('cls')
     
@@ -59,17 +68,20 @@ def log(string):
 
 def mqttPublish(topic, payload):
     if useMQTT:
-        client.publish(topic, payload)
+        response = client.publish(topic, payload)
+        if not response.is_published():
+            log("response could not be published")
 
 #MQTT Init
 if useMQTT:
+    client = mqtt.Client("SmartMeter")
     try:
-        client = mqtt.Client("SmartMeter")
         client.username_pw_set(mqttuser, mqttpasswort)
         client.connect(mqttBroker, mqttport)
+        
     except:
         print("Broker nicht erreichbar / Falsche Credentials !")
-        sys.exit()
+    log("Connected to Broker")
 
 def recv(serial):
     while True:
@@ -91,10 +103,12 @@ if __name__ == '__main__':
      stopbits=serial.STOPBITS_ONE,
      bytesize=serial.EIGHTBITS
     )
-
+    client.loop_start()
     # Header Startbytes vom Vorarlberger Smartmeter
     headerstart = "68fafa68"
-
+    if not printValue:
+        print("Starting SmartMeter...")
+        print("** Notice that printValue is disabled **")
     while True:
 
         sleep(5)
@@ -123,9 +137,9 @@ if __name__ == '__main__':
             msglen1 = int(hex(data[1]),16) # 1. FA --- 250 Byte
             #log ("msg1: ", msglen1)
 
-            if useMQTT and client.is_connected() == False:
-                client.reconnect()
-                log ("MQTT Reconnect")
+            # if useMQTT and client.is_connected() == False:
+            #     client.reconnect()
+            #     log ("MQTT Reconnect")
             header1 = 27
             header2 = 9
 

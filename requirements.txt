@@ -2,7 +2,7 @@
 gurux-dlms
 beautifulsoup4
 paho-mqtt
-lxml
+# lxml
 pyserial
-cryptography==37.0.2
+# cryptography==37.0.2
 pycryptodomex

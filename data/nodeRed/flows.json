@@ -44,7 +44,7 @@
         "name": "InfluxDB",
         "usetls": false,
         "tls": "",
-        "influxdbVersion": "2.0",
+        "influxdbVersion": "1.x",
         "url": "http://influxdb:8086",
         "rejectUnauthorized": false
     },
@@ -961,27 +961,9 @@
         "y": 440,
         "wires": [
             [
-                "5e511f75c1c9e747",
                 "5dcdf876baeec912"
             ]
         ]
-    },
-    {
-        "id": "5e511f75c1c9e747",
-        "type": "debug",
-        "z": "8f86e1d689845248",
-        "name": "",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 1810,
-        "y": 500,
-        "wires": []
     },
     {
         "id": "5dcdf876baeec912",

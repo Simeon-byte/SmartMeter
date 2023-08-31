@@ -7,3 +7,4 @@ data/grafana/*
 data/influxDB/*
 data/nodeRed/*
 !/data/nodeRed/flows.json
+!/data/nodeRed/flows_cred.json
