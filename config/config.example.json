@@ -1,7 +1,7 @@
 {
     "key": "",
     "comport": "/dev/ttyUSB0",
-    "printValue": true,
+    "logLevel": 2,
     "useMQTT": false,
     "useEnvMqttConfig": true,
     "mqttConfig": {

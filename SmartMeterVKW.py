@@ -15,8 +15,11 @@ config = json.load(f)
 # Environment Variable setzen, damit der Fehler nicht auf der Console Kommt
 os.environ['TERM'] = 'xterm'
 
-#Aktuelle Werte auf Console ausgeben (True | False)
-printValue = config["printValue"]
+# LogLevel
+# 0 - keine Logs
+# 1 - nur Logs
+# 2 - Logs und Daten
+logLevel = int(os.getenv("LOG_LEVEL", config.get("logLevel", 0)))
 
 #MQTT Verwenden (True | False)
 useMQTT = config["useMQTT"]
@@ -26,14 +29,14 @@ useEnvMqttConfig = config["useEnvMqttConfig"]
 if useMQTT:
     try:
         if (not useEnvMqttConfig) and config["mqttConfig"]:
-            if printValue:
+            if logLevel > 0:
                 print("Using Config File")
             mqttBroker = config["mqttConfig"]["mqttBroker"] or "localhost"
             mqttuser = config["mqttConfig"]["mqttUser"] or ""
             mqttpasswort = config["mqttConfig"]["mqttPassword"] or ""
             mqttport = config["mqttConfig"]["mqttPort"] or 1883
         else:
-            if printValue:
+            if logLevel > 0:
                 print("Using EnvConfig")
             mqttBroker = os.getenv("MQTT_BROKER", "localhost")
             mqttuser = os.getenv("MQTT_USER")
@@ -42,7 +45,7 @@ if useMQTT:
     except KeyError as e:
         print(f"Error: Missing configuration or environment variable: {e}")
         sys.exit()
-    if (printValue):
+    if (logLevel > 0):
         print("mqttBroker", mqttBroker)
         print("mqttuser", mqttuser)
         print("mqttpasswort", mqttpasswort)
@@ -55,22 +58,22 @@ key = config["key"]
 key=binascii.unhexlify(key)
 
 def clear():
-    if printValue and not useEnvMqttConfig:
+    if logLevel > 1 and not useEnvMqttConfig:
         if name == 'nt':
             _ = system('cls')
     
         else:
             _ = system('clear')
 
-def log(string):
-    if printValue:
+def log(string, messageLevel):
+    if logLevel >= messageLevel:
         print(string)
 
 def mqttPublish(topic, payload):
     if useMQTT:
         response = client.publish(topic, payload)
         if not response.is_published():
-            log("response could not be published")
+            log("response could not be published", 2)
 
 #MQTT Init
 if useMQTT:
@@ -80,17 +83,17 @@ if useMQTT:
         client.connect(mqttBroker, mqttport)
         
     except:
-        print("Broker nicht erreichbar / Falsche Credentials !")
-    log("Connected to Broker")
+        log("Broker nicht erreichbar / Falsche Credentials !", 1)
+    log("Connected to Broker", 1)
 
 def recv(serial):
     while True:
         data = serial.read_all()
         if data == '':
-            log ("\n...")
+            log ("\n...",2)
             continue
         else:
-            #log ("\n...lausche auf Schnittstelle")
+            #log ("\n...lausche auf Schnittstelle", 2)
             break
     return data
 
@@ -106,9 +109,8 @@ if __name__ == '__main__':
     client.loop_start()
     # Header Startbytes vom Vorarlberger Smartmeter
     headerstart = "68fafa68"
-    if not printValue:
-        print("Starting SmartMeter...")
-        print("** Notice that printValue is disabled **")
+    
+    print("Starting SmartMeter with logLevel "+ str(logLevel))
     while True:
 
         sleep(5)
@@ -124,7 +126,7 @@ if __name__ == '__main__':
             else:
                 # syncronisierung nötig
                 clear()
-                log ("\n*** Synchronisierung laeuft ***\n")
+                log ("\n*** Synchronisierung laeuft ***\n", 2)
                 #log ("Laenge von data = ", len(data))
                 serial.flushInput()
                 sleep(.5)
@@ -133,7 +135,7 @@ if __name__ == '__main__':
 
         if doit == 1 :
             clear()
-            log ("data: " + data.hex())
+            log ("data: " + data.hex(), 2)
             msglen1 = int(hex(data[1]),16) # 1. FA --- 250 Byte
             #log ("msg1: ", msglen1)
 
@@ -176,14 +178,14 @@ if __name__ == '__main__':
             cipher = AES.new(key, AES.MODE_GCM, nonce=iv)
             decrypted = cipher.decrypt(cyphertext_bytes)
 
-            #log("\nDecrypted:")
-            #log(decrypted.hex())
+            #log("\nDecrypted:", 2)
+            #log(decrypted.hex(), 2)
 
             # OBIS Code Werte aus decrypted.hex auslesen
             databin = decrypted.hex()
             ueberschrift = ("\n\t\t*** KUNDENSCHNITTSTELLE ***\n\nOBIS Code\tBezeichnung\t\t\t Wert")
-            log (ueberschrift)
-            #log(databin)
+            log (ueberschrift, 2)
+            #log(databin, 2)
 
             obis_len = 12
 
@@ -206,13 +208,13 @@ if __name__ == '__main__':
                 #datum_zeit = "0.0.1.0.0.255\tDatum Zeit:\t\t\t "+obis_datum_zeit.strftime("%d.%m.%Y %H:%M:%S")
                 datum_zeit = obis_datum_zeit.strftime("%d.%m.%Y %H:%M:%S")
                 
-                log(datum_zeit)
+                log(datum_zeit, 2)
                 mqttPublish("Smartmeter/Zeit",obis_datum_zeit.strftime("%Y-%m-%d %H:%M:%S"))
             
             else:
                 #obis fehler
                 datum_zeit = "\n*** kann OBIS Code nicht finden ===> key Fehler? ***\n"
-                log (datum_zeit)
+                log (datum_zeit, 1)
 
 
             # Zählernummer des Netzbetreibers
@@ -225,7 +227,7 @@ if __name__ == '__main__':
                 bytes_object = bytes.fromhex(obis_zaehlernummer)
                 zaehlernummer = "0.0.96.1.0.255\tZaehlernummer:\t\t\t "+bytes_object.decode("ASCII")
                 zaehlernummerfilename = bytes_object.decode("ASCII")
-                log(zaehlernummer)
+                log(zaehlernummer, 2)
                 mqttPublish("Smartmeter/Zaehlernummer",bytes_object.decode("ASCII"))
 
 
@@ -239,7 +241,7 @@ if __name__ == '__main__':
                 bytes_object = bytes.fromhex(obis_cosemlogdevname)
                 cosemlogdevname = "0.0.42.0.0.255\tCOSEM logical device name:\t "+bytes_object.decode("ASCII")
                 
-                log(cosemlogdevname)
+                log(cosemlogdevname, 2)
                 mqttPublish("Smartmeter/Cosemlogdevname",bytes_object.decode("ASCII"))
 
 
@@ -252,7 +254,7 @@ if __name__ == '__main__':
                 obis_spannungl1 = databin[obis_spannungl1_pos+obis_len+2:obis_spannungl1_pos+obis_len+2+obis_spannungl1_anzzeichen]
                 spannungl1 = "1.0.32.7.0.255\tSpannung L1 (V):\t\t "+str(int(obis_spannungl1,16)/10)
                 
-                log(spannungl1)
+                log(spannungl1, 2)
                 mqttPublish("Smartmeter/SpannungL1",int(obis_spannungl1,16)/10)
 
 
@@ -265,7 +267,7 @@ if __name__ == '__main__':
                 obis_spannungl2 = databin[obis_spannungl2_pos+obis_len+2:obis_spannungl2_pos+obis_len+2+obis_spannungl2_anzzeichen]
                 spannungl2 = "1.0.52.7.0.255\tSpannung L2 (V):\t\t "+str(int(obis_spannungl2,16)/10)
                 
-                log(spannungl2)
+                log(spannungl2, 2)
                 mqttPublish("Smartmeter/SpannungL2",int(obis_spannungl2,16)/10) 
 
 
@@ -278,7 +280,7 @@ if __name__ == '__main__':
                 obis_spannungl3 = databin[obis_spannungl3_pos+obis_len+2:obis_spannungl3_pos+obis_len+2+obis_spannungl3_anzzeichen]
                 spannungl3 = "1.0.72.7.0.255\tSpannung L3 (V):\t\t "+str(int(obis_spannungl3,16)/10)
                 
-                log(spannungl3)
+                log(spannungl3, 2)
                 mqttPublish("Smartmeter/SpannungL3",int(obis_spannungl3,16)/10)
 
 
@@ -291,7 +293,7 @@ if __name__ == '__main__':
                 obis_stroml1 = databin[obis_stroml1_pos+obis_len+2:obis_stroml1_pos+obis_len+2+obis_stroml1_anzzeichen]
                 stroml1 = "1.0.31.7.0.255\tStrom L1 (A):\t\t\t "+str(int(obis_stroml1,16)/100)
                 
-                log(stroml1)
+                log(stroml1, 2)
                 mqttPublish("Smartmeter/StromL1",int(obis_stroml1,16)/100)
 
 
@@ -304,7 +306,7 @@ if __name__ == '__main__':
                 obis_stroml2 = databin[obis_stroml2_pos+obis_len+2:obis_stroml2_pos+obis_len+2+obis_stroml2_anzzeichen]
                 stroml2 = "1.0.51.7.0.255\tStrom L2 (A):\t\t\t "+str(int(obis_stroml2,16)/100)
                 
-                log(stroml2)
+                log(stroml2, 2)
                 mqttPublish("Smartmeter/StromL2",int(obis_stroml2,16)/100)
 
 
@@ -317,7 +319,7 @@ if __name__ == '__main__':
                 obis_stroml3 = databin[obis_stroml3_pos+obis_len+2:obis_stroml3_pos+obis_len+2+obis_stroml3_anzzeichen]
                 stroml3 = "1.0.71.7.0.255\tStrom L3 (A):\t\t\t "+str(int(obis_stroml3,16)/100)
                 
-                log(stroml3)
+                log(stroml3, 2)
                 mqttPublish("Smartmeter/StromL3",int(obis_stroml3,16)/100)
 
 
@@ -330,7 +332,7 @@ if __name__ == '__main__':
                 obis_wirkleistungbezug = databin[obis_wirkleistungbezug_pos+obis_len+2:obis_wirkleistungbezug_pos+obis_len+2+obis_wirkleistungbezug_anzzeichen]
                 wirkleistungbezug = "1.0.1.7.0.255\tWirkleistung Bezug [kW]:\t "+str(int(obis_wirkleistungbezug,16)/1000)
                 
-                log(wirkleistungbezug)
+                log(wirkleistungbezug, 2)
                 mqttPublish("Smartmeter/MomentanleistungP",int(obis_wirkleistungbezug,16)/1000)
 
 
@@ -343,7 +345,7 @@ if __name__ == '__main__':
                 obis_wirkleistunglieferung = databin[obis_wirkleistunglieferung_pos+obis_len+2:obis_wirkleistunglieferung_pos+obis_len+2+obis_wirkleistunglieferung_anzzeichen]
                 wirkleistunglieferung = "1.0.2.7.0.255\tWirkleistung Lieferung [kW]:\t "+str(int(obis_wirkleistunglieferung,16)/1000)
                 
-                log(wirkleistunglieferung)
+                log(wirkleistunglieferung, 2)
                 mqttPublish("Smartmeter/MomentanleistungN",int(obis_wirkleistunglieferung,16)/1000)
 
 
@@ -356,7 +358,7 @@ if __name__ == '__main__':
                 obis_wirkenergiebezug = databin[obis_wirkenergiebezug_pos+obis_len+2:obis_wirkenergiebezug_pos+obis_len+2+obis_wirkenergiebezug_anzzeichen]
                 wirkenergiebezug = "1.0.1.8.0.255\tWirkenergie Bezug [kWh]:\t "+str(int(obis_wirkenergiebezug,16)/1000)
                 
-                log(wirkenergiebezug)
+                log(wirkenergiebezug, 2)
                 mqttPublish("Smartmeter/WirkenergieP",int(obis_wirkenergiebezug,16)/1000)
 
 
@@ -369,7 +371,7 @@ if __name__ == '__main__':
                 obis_wirkenergielieferung = databin[obis_wirkenergielieferung_pos+obis_len+2:obis_wirkenergielieferung_pos+obis_len+2+obis_wirkenergielieferung_anzzeichen]
                 wirkenergielieferung = "1.0.2.8.0.255\tWirkenergie Lieferung [kWh]:\t "+str(int(obis_wirkenergielieferung,16)/1000)
             
-                log(wirkenergielieferung)
+                log(wirkenergielieferung, 2)
                 mqttPublish("Smartmeter/WirkenergieN",int(obis_wirkenergielieferung,16)/1000)
 
 
@@ -382,7 +384,7 @@ if __name__ == '__main__':
                 obis_blindleistungbezug = databin[obis_blindleistungbezug_pos+obis_len+2:obis_blindleistungbezug_pos+obis_len+2+obis_blindleistungbezug_anzzeichen]
                 blindleistungbezug = "1.0.3.8.0.255\tBlindleistung Bezug [kW]:\t "+str(int(obis_blindleistungbezug,16)/1000)
                 
-                log(blindleistungbezug)
+                log(blindleistungbezug, 2)
                 mqttPublish("Smartmeter/BlindLeistungP",int(obis_blindleistungbezug,16)/1000)
 
 
@@ -395,7 +397,7 @@ if __name__ == '__main__':
                 obis_blindleistunglieferung = databin[obis_blindleistunglieferung_pos+obis_len+2:obis_blindleistunglieferung_pos+obis_len+2+obis_blindleistunglieferung_anzzeichen]
                 blindleistunglieferung = "1.0.4.8.0.255\tBlindleistung Lieferung [kW]:\t "+str(int(obis_blindleistunglieferung,16)/1000)
                 
-                log(blindleistunglieferung)
+                log(blindleistunglieferung, 2)
                 mqttPublish("Smartmeter/BlindLeistungN",int(obis_blindleistunglieferung,16)/1000)
 
 serial.close()

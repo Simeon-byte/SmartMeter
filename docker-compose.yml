@@ -86,6 +86,7 @@ services:
       context: .
     privileged: true
     environment:
+      - LOG_LEVEL=1 # 0 - nothing; 1 - only debug; 2 - debug and data
       - MQTT_BROKER=mosquitto
       - MQTT_PORT=$mosquittoPort
       - MQTT_USER=''
