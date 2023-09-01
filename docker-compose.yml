@@ -7,26 +7,17 @@ services:
     ports:
       - $mosquittoPort:1883
       - '9001:9001'
-    # healthcheck:
-    #   test: ["CMD", "mosquitto_sub", "-t", "$$SYS/#", "-C", "1", "-i", "healthcheck", "-W", "3"]
-    #   interval: 20s
-    #   timeout: 10s
-    #   retries: 5
-    #   start_period: 20s
+    restart: unless-stopped
     volumes:
       - './config/mosquitto.conf:/mosquitto/config/mosquitto.conf'
     networks:
       - smartmeterNetwork
   
-  
+  # InfluxDB for Storing data
   influxdb:
     container_name: smartmeter_influxdb
     image: 'influxdb:1.8'
-    # healthcheck:
-    #   test: "curl -f http://localhost:8086/ping" 
-    #   interval: 5s 
-    #   timeout: 10s 
-    #   retries: 5 
+    restart: unless-stopped
     ports:
       - $influxPort:8086
     volumes:
@@ -43,29 +34,35 @@ services:
       - INFLUXDB_META_LOGGING_ENABLED=false
       - INFLUXDB_DATA_QUERY_LOG_ENABLED=false
       - INFLUXDB_LOGGING_LEVEL=warn
-      - TZ=${TZ}
+      - TZ=Europe/Berlin
     networks:
       - smartmeterNetwork
 
+  # Grafana for Visualizing data
   grafana:
     container_name: smartmeter_grafana
     image: grafana/grafana:10.0.3
     ports: 
       - $grafanaPort:3000
     user: "1000"
+    restart: unless-stopped
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=$grafanaRootPassword
+      - influxdbUser=$influxdbUser
     volumes:
       - $PWD/data/grafana:/var/lib/grafana
+      - $PWD/config/grafana_datasource.yml:/etc/grafana/provisioning/datasources/automatic.yml
+      - $PWD/config/grafana_dashboard.yml:/etc/grafana/provisioning/dashboards/default.yml
     networks:
       - smartmeterNetwork
 
+  # NodeRed for automatic insertion into db
   node_red:
     container_name: smartmeter_node_red
     build:
       context: .
       dockerfile: Dockerfile-NodeRed
-
+    restart: unless-stopped
     depends_on:
       - mosquitto
       - influxdb
@@ -73,7 +70,6 @@ services:
       - $nodeRedPort:1880
     volumes:
       -  $PWD/data/nodeRed:/data
-      # -  $PWD/config/flows.json:/data/flows.json
     networks:
       - smartmeterNetwork
 

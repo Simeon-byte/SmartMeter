@@ -3,7 +3,9 @@
 config.json
 get-docker.sh
 data/grafana/*
-!data/grafana/
+/data/grafana/dashboards/*
+!/data/grafana/dashboards
+!/data/grafana/dashboards/grafana_dashboard.json
 data/influxDB/*
 data/nodeRed/*
 !/data/nodeRed/flows.json

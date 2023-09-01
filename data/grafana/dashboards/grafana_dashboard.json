@@ -1,0 +1,442 @@
+{
+    "annotations": {
+      "list": [
+        {
+          "builtIn": 1,
+          "datasource": {
+            "type": "grafana",
+            "uid": "-- Grafana --"
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "type": "dashboard"
+        }
+      ]
+    },
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 0,
+    "id": 1,
+    "links": [],
+    "liveNow": false,    "panels": [
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "d61b3f3d-9d84-4a64-b7ce-7d2f8c651d18"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "continuous-GrYlRd"
+            },
+            "mappings": [],
+            "max": 3,
+            "min": 0,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            },
+            "unit": "kwatt"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 10,
+          "w": 5,
+          "x": 0,
+          "y": 0
+        },
+        "id": 1,
+        "options": {
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "showThresholdLabels": false,
+          "showThresholdMarkers": true
+        },
+      "pluginVersion": "10.0.3",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "d61b3f3d-9d84-4a64-b7ce-7d2f8c651d18"
+            },
+            "groupBy": [
+              {
+                "params": [
+                  "$__interval"
+                ],
+                "type": "time"
+              },
+              {
+                "params": [
+                  "null"
+                ],
+                "type": "fill"
+              }
+            ],
+            "measurement": "Leistungsdaten",
+            "orderByTime": "ASC",
+            "policy": "never",
+            "refId": "A",
+            "resultFormat": "time_series",
+            "select": [
+              [
+                {
+                  "params": [
+                    "MomentanleistungP"
+                  ],
+                  "type": "field"
+                },
+                {
+                  "params": [],
+                  "type": "last"
+                }
+              ]
+            ],
+            "tags": []
+          }
+        ],
+        "title": "Aktueller Verbrauch",
+        "type": "gauge"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "d61b3f3d-9d84-4a64-b7ce-7d2f8c651d18"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "fixedColor": "green",
+              "mode": "fixed",
+              "seriesBy": "last"
+            },
+            "custom": {
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 15,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 2,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "kwatt"
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Leistungsdaten.mean"
+              },
+              "properties": [
+                {
+                  "id": "displayName",
+                  "value": "Leistung"
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 10,
+          "w": 19,
+          "x": 5,
+          "y": 0
+        },
+        "id": 2,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": false
+          },
+          "tooltip": {
+            "mode": "single",
+            "sort": "none"
+          }
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "d61b3f3d-9d84-4a64-b7ce-7d2f8c651d18"
+            },
+            "groupBy": [
+              {
+                "params": [
+                  "30s"
+                ],
+                "type": "time"
+              },
+              {
+                "params": [
+                  "linear"
+                ],
+                "type": "fill"
+              }
+            ],
+            "measurement": "Leistungsdaten",
+            "orderByTime": "ASC",
+            "policy": "never",
+            "refId": "A",
+            "resultFormat": "time_series",
+            "select": [
+              [
+                {
+                  "params": [
+                    "MomentanleistungP"
+                  ],
+                  "type": "field"
+                },
+                {
+                  "params": [],
+                  "type": "mean"
+                }
+              ]
+            ],
+            "tags": []
+          }
+        ],
+        "title": "Leistungsverlauf",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "d61b3f3d-9d84-4a64-b7ce-7d2f8c651d18"
+        },
+        "description": "",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "custom": {
+              "align": "auto",
+              "cellOptions": {
+                "type": "auto"
+              },
+              "inspect": false
+            },
+            "mappings": [],
+            "min": 0,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            },
+            "unit": "kwatth"
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Time"
+              },
+              "properties": [
+                {
+                  "id": "displayName",
+                  "value": "Tag"
+                },
+                {
+                  "id": "unit",
+                  "value": "time: DD.MM"
+                },
+                {
+                  "id": "custom.width",
+                  "value": 75
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Leistungsdaten.difference"
+              },
+              "properties": [
+                {
+                  "id": "displayName",
+                  "value": "Bezogene Energie"
+                },
+                {
+                  "id": "custom.cellOptions",
+                  "value": {
+                    "mode": "gradient",
+                    "type": "gauge",
+                    "valueDisplayMode": "color"
+                  }
+                },
+                {
+                  "id": "color",
+                  "value": {
+                    "mode": "continuous-GrYlRd"
+                  }
+                },
+                {
+                  "id": "unit",
+                  "value": "kwatth"
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 16,
+          "w": 8,
+          "x": 0,
+          "y": 10
+        },
+        "id": 3,
+        "options": {
+          "cellHeight": "sm",
+          "footer": {
+            "countRows": false,
+            "fields": "",
+            "reducer": [
+              "sum"
+            ],
+            "show": true
+          },
+          "showHeader": true
+        },
+      "pluginVersion": "10.0.3",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "d61b3f3d-9d84-4a64-b7ce-7d2f8c651d18"
+            },
+            "groupBy": [
+              {
+                "params": [
+                  "1d"
+                ],
+                "type": "time"
+              },
+              {
+                "params": [
+                "0"
+                ],
+                "type": "fill"
+              }
+            ],
+            "measurement": "Leistungsdaten",
+            "orderByTime": "ASC",
+            "policy": "never",
+            "refId": "A",
+            "resultFormat": "time_series",
+            "select": [
+              [
+                {
+                  "params": [
+                    "WirkerngieP"
+                  ],
+                  "type": "field"
+                },
+                {
+                  "params": [],
+                  "type": "last"
+                },
+                {
+                  "params": [],
+                  "type": "difference"
+                }
+              ]
+            ],
+            "tags": []
+          }
+        ],
+        "timeFrom": "7d",
+        "title": "Strombezug pro Tag",
+        "transformations": [
+          {
+            "id": "sortBy",
+            "options": {
+              "fields": {},
+              "sort": [
+                {
+                  "desc": true,
+                  "field": "Time"
+                }
+              ]
+            }
+          }
+        ],
+        "type": "table"
+      }
+    ],
+    "refresh": "5s",
+    "schemaVersion": 38,
+    "style": "dark",
+    "tags": [],
+    "templating": {
+      "list": []
+    },
+    "time": {
+      "from": "now-6h",
+      "to": "now"
+    },
+    "timepicker": {},
+    "timezone": "",
+    "title": "Smart Meter Monitoring",
+    "uid": "c9bfec5d-3a03-491c-bf1b-87abcbf0f3b5",
+    "version": 8,
+    "weekStart": ""
+  }

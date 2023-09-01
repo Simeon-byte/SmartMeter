@@ -1,0 +1,21 @@
+apiVersion: 1
+
+deleteDatasources:
+  - name: InfluxDB
+    orgId: 1
+
+datasources:
+  - name: InfluxDB
+    type: influxdb
+    access: proxy
+    orgId: 1
+    uid: d61b3f3d-9d84-4a64-b7ce-7d2f8c651d18
+    url: http://influxdb:8086
+    user: $influxdbUser
+    database: ''
+    basicAuth: false
+    isDefault: true
+    jsonData:
+      dbName: SmartMeter
+      httpMode: GET
+    readOnly: false

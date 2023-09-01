@@ -1,0 +1,13 @@
+apiVersion: 1
+providers:
+  - name: Smart Meter Monitoring
+    # folder: SmartMeter # The folder where to place the dashboards, keep empty for GENERAL folder
+    type: file
+
+    disableDeletion: true
+    updateIntervalSeconds: 5
+    allowUiUpdates: true
+    
+    options:
+      path: /var/lib/grafana/dashboards/grafana_dashboard.json
+
