@@ -1,66 +1,74 @@
-# Alle Infos zu diesem Projekt befinden sich auf meinem Blog
+# Dieses Projekt basiert auf der Arbeit von [greenMikeEU](https://github.com/greenMikeEU)
+Der Pythoncode dieses Projekts basiert auf dem Beta-Code von [greenMikeEU](https://github.com/greenMikeEU) für das **Bundesland Vorarlberg**.<br>
+In seinem [Blogartikel](https://www.michaelreitbauer.at/kaifa-ma309-auslesen-smart-meter-evn/) wird beschrieben, wie Daten osterreichischer Stromzähler vom Typ `Kaifa Drehstromzähler MA309` automatisiert ausgelesen, gespeichert und visualisiert werden können.<br>
+Dabei kommen folgende Softwarekomponenten zum Einsatz:
+- **Python Script** zum Auslesen des Zählers
+- [**Mosquitto**](https://mosquitto.org/) als MQTT Broker, über den die rohen Daten versendet werden
+- [**Node-Red**](https://nodered.org/) zur automatisierten Abspeicherung der Daten in einer Datenbank
+- [**InfluxDB**](https://www.influxdata.com) als Datenbank für die Zeitreihen-Datensätze
+- [**Grafana**](https://grafana.com/) zur Visualisierung der Daten
 
-https://www.michaelreitbauer.at/blog
+Die verschiedenen Komponenten wurden in diesem Repository mithilfe von [Docker](https://www.docker.com/) und docker-compose containerisiert und können so mit nur einem einzigen Befehl gestartet werden.  
+
+Dabei sind die Container beim Start bereits voll konfiguriert. Die Konfiguration basiert auf den weiterführenden Blogartikeln (*[MQTT Nachrichten in Datenbank speichern](https://www.michaelreitbauer.at/mqtt-nachrichten-in-datenbank-speichern/), [Smartmeter Dashboard in Grafana](https://www.michaelreitbauer.at/smart-meter-dashboard-in-grafana-influxdb/)*) von Michael Reitbauer.
 
 # Unterstützte Zähler
 
--   [Kaifa Drehstromzähler MA309 (EVN)](#HSmartMeterEVN)
 -   [Kaifa Drehstromzähler MA309M<sub>H4LAT1</sub> (Vorarlberg)](#HSmartMeterVKW)
 
-# <a id="HSmartMeterEVN"></a>SmartMeterEVN
-
-Dieses Projekt ermöglicht es den Smartmeter der EVN (Netz Niederösterreich) über die Kundenschnittstelle auszulesen.
-Smart Meter werden von der Netz NÖ GmbH eingebaut, auf Basis der gesetzlichen Forderungen.
-
-## Getting Started
-
-### Voraussetzungen Hardware
-
--   Passwort für die Kundenschnittstelle
-    -   Alle folgenden Informationen sind aus dem Folder der EVN. (https://www.netz-noe.at/Download-(1)/Smart-Meter/218_9_SmartMeter_Kundenschnittstelle_lektoriert_14.aspx)
-    -   Wenn bereits ein Smart Meter in der Kundenanlage eingebaut ist, kann hier das der Schlüssel angefordert werden: smartmeter@netz-noe.at
-        -   Kundennummer oder Vertragskontonummer
-        -   Zählernummer
-        -   Handynummer
-
-### Voraussetzungen Software
-
--   Python 3, plus Libraries (siehe "requirements.txt")
-    Installation der Python Libraries:
-    ```
-    pip install -r requirements.txt
-    ```
-
-### Zähler Hersteller
-
--   Kaifa Drehstromzähler MA309
 
 # <a id="HSmartMeterVKW"></a>SmartMeterVKW
-Das Skript `SmartMeterVKW.py` ermöglicht den Zugriff auf den Vorarlberger Smartmeter vom Typ MA309M<sub>H4LAT1</sub>. Der Code könnte auch für Zähler des gleichen Typs außerhalb von Vorarlberg funktionieren.
+Das Skript `SmartMeterVKW.py` ermöglicht den Zugriff auf den Vorarlberger Smartmeter vom Typ MA309M<sub>H4LAT1</sub>. Der Code kann auch außerhalb des Dockercontainers ausgeführt werden. Dies ist weiter unten beim Punkt [*Python außerhalb von Docker ausführen*](#RunPythonStandalone) genauer beschrieben.
 
+
+## Voraussetzungen
+#### Hardware
+-   Kaifa MA309<sub>H4LAT1</sub>
+-   Passwort für die Kundenschnittstelle
+    -   Der Schüssel kann Online im **Kundenportal** des Stromanbierters angefordert werden.
+-   Raspberry Pi
+-   [USB zu MBus Adapter](https://www.ebay.at/itm/144514262822)
+#### Software
+
+- Raspberry Pi OS 32bit (ungetestet für 64bit)
+- Docker und Docker-compose
+    - Diese können manuell oder mithilfe des `install.sh` Skripts installiert werden.
 ## Getting Started
 
-### Voraussetzungen Hardware
+- Installieren Sie die benötigte Software entweder manuell oder mithilfe des `install.sh` Skripts.  
+- <a id="configjsonAnlegen"></a>Als Nächstes muss im Ordner `config/` eine Datei `config.json` nach Vorlage der `config.example.json` angelegt werden, welche die nötigen Informationen erhält. Zu beachten ist jedoch, dass diese Informationen von den Umgebungsvariablen im `docker-compose.yml` größtenteils überschrieben werden. 
+- Die meisten Einstellungen die das `docker-compose.yml` verwendet werden aus der `.env` Datei geholt, diese muss auch noch manuell erstellt werden. Folgende Werte sollten hierbei gesetzt werden:  
+    ``` 
+    ReaderKey= --Kundenschnittstellen Schlüssel--
+    Comport=/dev/ttyUSB0
+    mosquittoPort=1883
+    nodeRedPort=1880
+    influxPort=8086
+    grafanaPort=3000
+    grafanaRootPassword="$ecurePasswordGrafana123"
 
--   Passwort für die Kundenschnittstelle
-    -   Wenn bereits ein Smart Meter in der Kundenanlage eingebaut ist, kann der Schüssel Online im [Kundenportal](https://online-services.vkw.at/powercommerce/portal/) angefordert werden.
+    influxdbAdminUser="root"
+    influxdbAdminPassword="q^9F1$iE1iX6LCtxzOJLWHVrRHxB@WSkp8p4fYcf"
+    influxdbUser="smartmeteruser"
+    influxdbUserPassword="$ecurePasswordInflux123"
+    influxdbDatabase="SmartMeter"
+    ```
+    Diese Werte können individuell angepasst werden, jedoch sollte beachtet werden, dass diese an mehreren Stellen (z.B `grafana_datasource.yml`, `flows.json`, usw.) hartkodiert sind.
+- Nun können die Container mit dem Befehl 
+  ```
+  docker-compose up
+  ``` 
+  gestartet werden. Mit `-d` läuft das ganze im Hintergrund. Mit 
+  ```
+  docker-compose down
+  ```
+  werden die Container alle wieder gestoppt.  
+## <a id="RunPythonStandalone"></a>Pythonskript außerhalb von Docker ausführen
 
-### Voraussetzungen Software
+Um das Skript alleine außerhalb eines Dockercontainers auszuführen, muss lediglich wie bereits [vorher](#configjsonAnlegen) beschrieben eine `config.json` Datei erstellt werden. Außerdem müssen die verwendeten Bibliotheken des Pythonskripts auf dem System installiert werden. Dies kann mit dem Befehl `pip install -r requirements.txt` oder dem Ausführen des `setup.sh` Skripts umgesetzt werden.
 
-- Die Benötigten Dependencies können wie bereits oben beschrieben mit dem Befehl `pip install -r requirements.txt` installiert werden.
-
-#### Anpassungen
-
--   Es muss eine `config.json` Datei nach Vorlage der `config.example.json` Datei angelegt werden, die die nötigen Informationen erhält.
--   Statt des Hauptscripts wird nun die Datei `SmartMeterVKW.py` ausgeführt werden.
-
-### Zähler Hersteller
-
--   Kaifa Drehstromzähler MA309M<sub>H4LAT1</sub>
-
-# Unterstützung
-
-Spendenlink: https://www.paypal.me/greenMikeEU
+# Credits
+Originaler Code und Anleitung von [greenMikeEU](https://github.com/greenMikeEU/SmartMeterEVNKaifaMA309).
 
 # License
 
