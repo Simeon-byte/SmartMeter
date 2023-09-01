@@ -1,4 +1,5 @@
 # Funktion
+![Visualisierung der Container](Visualisierung.png)
 Der Pythoncode dieses Projekts basiert auf dem Beta-Code von [greenMikeEU](https://github.com/greenMikeEU) für das **Bundesland Vorarlberg**.<br>
 In seinem [Blogartikel](https://www.michaelreitbauer.at/kaifa-ma309-auslesen-smart-meter-evn/) wird beschrieben, wie Daten osterreichischer Stromzähler vom Typ `Kaifa Drehstromzähler MA309` automatisiert ausgelesen, gespeichert und visualisiert werden können.<br>
 Dabei kommen folgende Softwarekomponenten zum Einsatz:
