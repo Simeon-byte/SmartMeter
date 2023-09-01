@@ -28,3 +28,12 @@ if ! command -v docker-compose; then
     sudo pip3 install docker-compose
     echo "Finished docker-compose installation."
 fi
+
+
+if ! [ -d "./data/grafana"]; then
+    mkdir data/grafana
+fi
+if ! [ -d "./data/influxDB"]; then
+    mkdir data/influxDB
+fi
+sudo chown $USER -R /data
