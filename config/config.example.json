@@ -3,11 +3,8 @@
     "comport": "/dev/ttyUSB0",
     "logLevel": 2,
     "useMQTT": false,
-    "useEnvMqttConfig": true,
-    "mqttConfig": {
-        "mqttBroker": "",
-        "mqttPort": 1883,
-        "mqttUser": "",
-        "mqttPassword": ""
-    }
+    "mqttBroker": "",
+    "mqttUser": "",
+    "mqttPassword": "",
+    "mqttPort": 1883
 }

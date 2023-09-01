@@ -22,43 +22,34 @@ os.environ['TERM'] = 'xterm'
 logLevel = int(os.getenv("LOG_LEVEL", config.get("logLevel", 0)))
 
 #MQTT Verwenden (True | False)
-useMQTT = config["useMQTT"]
-#Custom MQTT Credentials or use env provided
-useEnvMqttConfig = config["useEnvMqttConfig"]
-#MQTT Broker IP adresse Eingeben ohne Port!
+truelist = ['True', 'true', '1', 'yes', 'Wahr']
+useMQTT = str(os.getenv("USE_MQTT", config.get("useMQTT", "False"))) in truelist
+if logLevel > 0 and not useMQTT:
+    print("MQTT is disabled")
+#MQTT Broker Credentials
 if useMQTT:
-    try:
-        if (not useEnvMqttConfig) and config["mqttConfig"]:
-            if logLevel > 0:
-                print("Using Config File")
-            mqttBroker = config["mqttConfig"]["mqttBroker"] or "localhost"
-            mqttuser = config["mqttConfig"]["mqttUser"] or ""
-            mqttpasswort = config["mqttConfig"]["mqttPassword"] or ""
-            mqttport = config["mqttConfig"]["mqttPort"] or 1883
-        else:
-            if logLevel > 0:
-                print("Using EnvConfig")
-            mqttBroker = os.getenv("MQTT_BROKER", "localhost")
-            mqttuser = os.getenv("MQTT_USER")
-            mqttpasswort = os.getenv("MQTT_PASSWORD")
-            mqttport = int(os.getenv("MQTT_PORT", 1883))
-    except KeyError as e:
-        print(f"Error: Missing configuration or environment variable: {e}")
-        sys.exit()
+    mqttBroker = os.getenv("MQTT_BROKER", config.get("mqttBroker", "localhost"))
+    mqttuser = os.getenv("MQTT_USER", config.get("mqttUser", None))
+    mqttpasswort = os.getenv("MQTT_PASSWORD", config.get("mqttPassword", None))
+    mqttport = int(os.getenv("MQTT_PORT", config.get("mqttPort", 1883)))
     if (logLevel > 0):
         print("mqttBroker", mqttBroker)
         print("mqttuser", mqttuser)
-        print("mqttpasswort", mqttpasswort)
+        print("mqttpasswort", "[is set]" if (mqttpasswort is not None) else "None")
         print("mqttport", mqttport)
 #Comport Config/Init
-comport = config["comport"] or '/dev/ttyUSB0'
-
+comport = os.getenv("COMPORT", config.get("comport", '/dev/ttyUSB0'))
+if logLevel > 0:
+    print("Using Comport",comport)
 # EVN Schlüssel eingeben zB. “36C66639E48A8CA4D6BC8B282A793BBB”
-key = config["key"]
+key = os.getenv("KEY", config.get("key", None))
+if key is None:
+    print("No key provided")
+    sys.exit()
 key=binascii.unhexlify(key)
 
 def clear():
-    if logLevel > 1 and not useEnvMqttConfig:
+    if logLevel > 1:
         if name == 'nt':
             _ = system('cls')
     
@@ -71,7 +62,7 @@ def log(string, messageLevel):
 
 def mqttPublish(topic, payload):
     if useMQTT:
-        response = client.publish(topic, payload)
+        response = client.publish(topic, payload) # somehow buggy?
         if not response.is_published():
             log("response could not be published", 2)
 
@@ -90,7 +81,7 @@ def recv(serial):
     while True:
         data = serial.read_all()
         if data == '':
-            log ("\n...",2)
+            log ("\n...", 2)
             continue
         else:
             #log ("\n...lausche auf Schnittstelle", 2)

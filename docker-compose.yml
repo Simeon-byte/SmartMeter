@@ -84,13 +84,17 @@ services:
       - mosquitto
     build: 
       context: .
-    privileged: true
+    privileged: true # needed for accessing usb
+    restart: unless-stopped
     environment:
+      - COMPORT=/dev/ttyUSB0
+      - KEY=$ReaderKey
       - LOG_LEVEL=1 # 0 - nothing; 1 - only debug; 2 - debug and data
+      - USE_MQTT=True
       - MQTT_BROKER=mosquitto
       - MQTT_PORT=$mosquittoPort
-      - MQTT_USER=''
-      - MQTT_PASSWORD=''
+      # - MQTT_USER=
+      # - MQTT_PASSWORD=
     networks:
       - smartmeterNetwork
   
