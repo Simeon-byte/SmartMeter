@@ -65,25 +65,6 @@
         "y": 560,
         "wires": [
             [
-                "64804af0d6c367ab"
-            ]
-        ]
-    },
-    {
-        "id": "64804af0d6c367ab",
-        "type": "function",
-        "z": "8f86e1d689845248",
-        "name": "Umrechnung von Wh in kWh",
-        "func": "var Wert = msg.payload;\nmsg.payload = Wert/1000;\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 480,
-        "y": 560,
-        "wires": [
-            [
                 "9d853d185e198651"
             ]
         ]
@@ -102,25 +83,6 @@
         "rh": 0,
         "inputs": 0,
         "x": 170,
-        "y": 620,
-        "wires": [
-            [
-                "0030dbadcb923388"
-            ]
-        ]
-    },
-    {
-        "id": "0030dbadcb923388",
-        "type": "function",
-        "z": "8f86e1d689845248",
-        "name": "Umrechnung von Wh in kWh",
-        "func": "var Wert = msg.payload;\nmsg.payload = Wert/1000;\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 480,
         "y": 620,
         "wires": [
             [
@@ -378,13 +340,13 @@
         "id": "9d853d185e198651",
         "type": "change",
         "z": "8f86e1d689845248",
-        "name": "Überschrift für Objekt (WirkerngieP)",
+        "name": "Überschrift für Objekt (WirkenergieP)",
         "rules": [
             {
                 "t": "set",
                 "p": "topic",
                 "pt": "msg",
-                "to": "WirkerngieP",
+                "to": "WirkenergieP",
                 "tot": "str"
             }
         ],
