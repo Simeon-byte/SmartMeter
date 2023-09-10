@@ -1,7 +1,8 @@
 # Funktion
-![Visualisierung der Container](Visualisierung.png)
 Der Pythoncode dieses Projekts basiert auf dem Beta-Code von [greenMikeEU](https://github.com/greenMikeEU) für das **Bundesland Vorarlberg**.<br>
-In seinem [Blogartikel](https://www.michaelreitbauer.at/kaifa-ma309-auslesen-smart-meter-evn/) wird beschrieben, wie Daten osterreichischer Stromzähler vom Typ `Kaifa Drehstromzähler MA309` automatisiert ausgelesen, gespeichert und visualisiert werden können.<br>
+In seinem [Blogartikel](https://www.michaelreitbauer.at/kaifa-ma309-auslesen-smart-meter-evn/) wird beschrieben, wie Daten osterreichischer Stromzähler vom Typ `Kaifa Drehstromzähler MA309` automatisiert ausgelesen, gespeichert und visualisiert werden können.<br>  
+
+![Grafana Oberfläche](Grafana.png)
 Dabei kommen folgende Softwarekomponenten zum Einsatz:
 - **Python Script** zum Auslesen des Zählers
 - [**Mosquitto**](https://mosquitto.org/) als MQTT Broker, über den die rohen Daten versendet werden
@@ -9,13 +10,16 @@ Dabei kommen folgende Softwarekomponenten zum Einsatz:
 - [**InfluxDB**](https://www.influxdata.com) als Datenbank für die Zeitreihen-Datensätze
 - [**Grafana**](https://grafana.com/) zur Visualisierung der Daten
 
-Die verschiedenen Komponenten wurden in diesem Repository mithilfe von [Docker](https://www.docker.com/) und docker-compose containerisiert und können so mit nur einem einzigen Befehl gestartet werden.  
+Die verschiedenen Komponenten wurden in diesem Repository mithilfe von [Docker](https://www.docker.com/) und docker-compose containerisiert und können so mit nur einem einzigen Befehl gestartet werden.
+
+![Visualisierung der Container](Visualisierung.png)
 
 Dabei sind die Container beim Start bereits voll konfiguriert. Die Konfiguration basiert auf den weiterführenden Blogartikeln (*[MQTT Nachrichten in Datenbank speichern](https://www.michaelreitbauer.at/mqtt-nachrichten-in-datenbank-speichern/), [Smartmeter Dashboard in Grafana](https://www.michaelreitbauer.at/smart-meter-dashboard-in-grafana-influxdb/)*) von Michael Reitbauer.
 
 # Unterstützte Zähler
 
 -   [Kaifa Drehstromzähler MA309M<sub>H4LAT1</sub> (Vorarlberg)](#HSmartMeterVKW)
+-   Potentiell weitere (ungetestet)
 
 
 # <a id="HSmartMeterVKW"></a>SmartMeterVKW
@@ -33,7 +37,7 @@ Das Skript `SmartMeterVKW.py` ermöglicht den Zugriff auf den Vorarlberger Smart
 
 - Raspberry Pi OS 32bit (ungetestet für 64bit)
 - Docker und Docker-compose
-    - Diese können manuell oder mithilfe des `install.sh` Skripts installiert werden.
+    - Diese können entweder manuell oder mithilfe des `install.sh` Skripts installiert werden.
 ## Getting Started
 
 - Installieren Sie die benötigte Software entweder manuell oder mithilfe des `install.sh` Skripts.  
@@ -69,7 +73,7 @@ Das Skript `SmartMeterVKW.py` ermöglicht den Zugriff auf den Vorarlberger Smart
 Um das Skript alleine außerhalb eines Dockercontainers auszuführen, muss lediglich wie bereits [vorher](#configjsonAnlegen) beschrieben eine `config.json` Datei erstellt werden. Außerdem müssen die verwendeten Bibliotheken des Pythonskripts auf dem System installiert werden. Dies kann mit dem Befehl `pip install -r requirements.txt` oder dem Ausführen des `setup.sh` Skripts umgesetzt werden.
 
 # Credits
-Originaler Code und Anleitung von [greenMikeEU](https://github.com/greenMikeEU/SmartMeterEVNKaifaMA309).
+Originaler [Code](https://github.com/greenMikeEU/SmartMeterEVNKaifaMA309) und [Anleitung](https://www.michaelreitbauer.at/kaifa-ma309-auslesen-smart-meter-evn/) von [greenMikeEU](https://github.com/greenMikeEU).
 
 # License
 
