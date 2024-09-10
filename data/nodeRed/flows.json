@@ -1025,11 +1025,11 @@
         "rap": true,
         "rh": 0,
         "inputs": 0,
-        "x": 1200,
+        "x": 180,
         "y": 920,
         "wires": [
             [
-                "454b964139d73f1c"
+                "eb0006b7a500728e"
             ]
         ]
     },
@@ -1094,6 +1094,33 @@
         "libs": [],
         "x": 1200,
         "y": 860,
+        "wires": [
+            [
+                "454b964139d73f1c"
+            ]
+        ]
+    },
+    {
+        "id": "eb0006b7a500728e",
+        "type": "change",
+        "z": "8f86e1d689845248",
+        "name": "Überschrift für Objekt (Zaehlernummer)",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Zaehlernummer",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1160,
+        "y": 920,
         "wires": [
             [
                 "454b964139d73f1c"
