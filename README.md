@@ -58,7 +58,7 @@ Das Skript `SmartMeterVKW.py` ermöglicht den Zugriff auf den Vorarlberger Smart
     influxdbUserPassword="$ecurePasswordInflux123"
     influxdbDatabase="SmartMeter"
     ```
-    Diese Werte können individuell angepasst werden, jedoch sollte beachtet werden, dass diese an mehreren Stellen (z.B `grafana_datasource.yml`, `flows.json`, usw.) hartkodiert sind.
+    Diese Werte können individuell angepasst werden, jedoch sollte beachtet werden, dass diese an mehreren Stellen (z.B `grafana_datasource.yml`, `flows.json`, usw.) hartkodiert hinterlegt sind.
 - Nun können die Container mit dem Befehl 
   ```
   docker-compose up
