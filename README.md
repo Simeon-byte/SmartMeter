@@ -63,11 +63,13 @@ Das Skript `SmartMeterVKW.py` ermöglicht den Zugriff auf den Vorarlberger Smart
   ```
   docker-compose up
   ``` 
-  gestartet werden. Mit `-d` läuft das ganze im Hintergrund. Mit 
+  gestartet werden. Mit `-d` läuft das ganze im Hintergrund.
+
+- Mit folgendem Befehl werden die Container alle wieder gestoppt: 
   ```
   docker-compose down
   ```
-  werden die Container alle wieder gestoppt.  
+  
 ## <a id="RunPythonStandalone"></a>Pythonskript außerhalb von Docker ausführen
 
 Um das Skript alleine außerhalb eines Dockercontainers auszuführen, muss lediglich wie bereits [vorher](#configjsonAnlegen) beschrieben eine `config.json` Datei erstellt werden. Außerdem müssen die verwendeten Bibliotheken des Pythonskripts auf dem System installiert werden. Dies kann mit dem Befehl `pip install -r requirements.txt` oder dem Ausführen des `setup.sh` Skripts umgesetzt werden.
