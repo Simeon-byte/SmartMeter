@@ -1,78 +1,108 @@
-# Funktion
-Der Pythoncode dieses Projekts basiert auf dem Beta-Code von [greenMikeEU](https://github.com/greenMikeEU) für das **Bundesland Vorarlberg**.<br>
-In seinem [Blogartikel](https://www.michaelreitbauer.at/kaifa-ma309-auslesen-smart-meter-evn/) wird beschrieben, wie Daten osterreichischer Stromzähler vom Typ `Kaifa Drehstromzähler MA309` automatisiert ausgelesen, gespeichert und visualisiert werden können.<br>  
+# Über das Projekt
+![Repo-Badge](https://img.shields.io/badge/simeon__byte-SmartMeter-blue?logo=github)
+
+Dieses Projekt basiert auf der Vorarbeit von [greenMikeEU](https://github.com/greenMikeEU) und einer experimentellen Implementierung für das **Bundesland Vorarlberg**.<br>
+Die Logik orientiert sich an den Konzepten aus Michael Reitbauers [Blogartikel](https://www.michaelreitbauer.at/kaifa-ma309-auslesen-smart-meter-evn/), welche die automatisierte Erfassung, Speicherung und Visualisierung von Daten des `Kaifa MA309` Drehstromzählers detailliert beschreiben<br>  
 
 ![Grafana Oberfläche](Grafana.png)
-Dabei kommen folgende Softwarekomponenten zum Einsatz:
-- **Python Script** zum Auslesen des Zählers
-- [**Mosquitto**](https://mosquitto.org/) als MQTT Broker, über den die rohen Daten versendet werden
-- [**Node-Red**](https://nodered.org/) zur automatisierten Abspeicherung der Daten in einer Datenbank
-- [**InfluxDB**](https://www.influxdata.com) als Datenbank für die Zeitreihen-Datensätze
-- [**Grafana**](https://grafana.com/) zur Visualisierung der Daten
 
-Die verschiedenen Komponenten wurden in diesem Repository mithilfe von [Docker](https://www.docker.com/) und docker-compose containerisiert und können so mit nur einem einzigen Befehl gestartet werden.
+# So funktioniert's 
+Das System besteht aus mehreren ineinandergreifenden Komponenten, welche folgende Aufgaben übernehmen:
+- **Python Script**: Liest die Daten direkt am Zähler aus.
+- [**Mosquitto**](https://mosquitto.org/): Fungiert als MQTT-Broker und verteilt die Rohdaten im Netzwerk.
+- [**Node-RED**](https://nodered.org/): Nimmt die Daten entgegen und speichert sie strukturiert in der Datenbank ab.
+- [**InfluxDB**](https://www.influxdata.com): Eine Datenbank spezialisiert auf Zeitreihen-Datensätze.
+- [**Grafana**](https://grafana.com/): Das Dashboard zur visuellen Aufbereitung und Analyse der gesammelten Daten.
 
-![Visualisierung der Container](Visualisierung.png)
+Um die Installation so einfach wie möglich zu halten, sind alle Komponenten in [Docker](https://www.docker.com/)-Containern gebündelt. Dadurch lässt sich das gesamte System mit nur einem einzigen Befehl starten.
 
-Dabei sind die Container beim Start bereits voll konfiguriert. Die Konfiguration basiert auf den weiterführenden Blogartikeln (*[MQTT Nachrichten in Datenbank speichern](https://www.michaelreitbauer.at/mqtt-nachrichten-in-datenbank-speichern/), [Smartmeter Dashboard in Grafana](https://www.michaelreitbauer.at/smart-meter-dashboard-in-grafana-influxdb/)*) von Michael Reitbauer.
+```mermaid
+flowchart LR
+    classDef python fill:transparent,stroke:#d977e8,stroke-width:2px,color:#d977e8
+    classDef mqtt fill:transparent,stroke:#4dabf5,stroke-width:2px,color:#4dabf5
+    classDef nodered fill:transparent,stroke:#4db6ac,stroke-width:2px,color:#4db6ac
+    classDef grafana fill:transparent,stroke:#ff9800,stroke-width:2px,color:#ff9800
+    classDef influx fill:transparent,stroke:#f57c00,stroke-width:2px,color:#f57c00
 
-# Unterstützte Zähler
+    %% Definition der Boxen
+    P(["Python Script"]):::python
+    M(["Mosquitto"]):::mqtt
+    NR(["Node-RED"]):::nodered
+    G(["Grafana"]):::grafana
+    I[("InfluxDB")]:::influx
 
--   [Kaifa Drehstromzähler MA309M<sub>H4LAT1</sub> (Vorarlberg)](#HSmartMeterVKW)
--   Potentiell weitere (ungetestet)
+    %% Datenfluss
+    P --> M
+    M --> NR
+    NR --> I
+    G --> I
+```
+Die Container sind vorkonfiguriert und basieren auf den weiterführenden Blogartikeln von Michael Reitbauer (*[MQTT Nachrichten in Datenbank speichern](https://www.michaelreitbauer.at/mqtt-nachrichten-in-datenbank-speichern/), [Smartmeter Dashboard in Grafana](https://www.michaelreitbauer.at/smart-meter-dashboard-in-grafana-influxdb/)*).
 
+# Unterstützte Stromzähler
 
-# <a id="HSmartMeterVKW"></a>SmartMeterVKW
-Das Skript `SmartMeterVKW.py` ermöglicht den Zugriff auf den Vorarlberger Smartmeter vom Typ MA309M<sub>H4LAT1</sub>. Der Code kann auch außerhalb des Dockercontainers ausgeführt werden. Dies ist weiter unten beim Punkt [*Python außerhalb von Docker ausführen*](#RunPythonStandalone) genauer beschrieben.
+-   Kaifa Drehstromzähler MA309MH4LAT1 (Standard in Vorarlberg)
+-   Potentiell weitere Modelle (ungetestet)
 
-
-## Voraussetzungen
-#### Hardware
+# Vorbereitung
+## Hardware
 -   Kaifa MA309<sub>H4LAT1</sub>
--   Passwort für die Kundenschnittstelle
-    -   Der Schüssel kann Online im **Kundenportal** des Stromanbierters angefordert werden.
+-   Schlüssel für die Kundenschnittstelle. Dieser kann im Online-Portal des Stromanbieters angefordert werden.
 -   Raspberry Pi
--   [USB zu MBus Adapter](https://www.ebay.at/itm/144514262822)
-#### Software
+-   USB zu M-Bus Adapter (Meist günstig auf [eBay](https://www.ebay.at/itm/144514262822) zu finden)
+## Software
 
-- Raspberry Pi OS 32bit (ungetestet für 64bit)
-- Docker
-    - kann entweder manuell oder mithilfe des `install.sh` Skripts installiert werden.
-## Getting Started
+- Raspberry Pi OS (32-bit getestet)
+- Docker & Docker Compose: Können manuell oder über das `install.sh` Skript installiert werden.
 
-- Installieren Sie die benötigte Software entweder manuell oder mithilfe des `install.sh` Skripts.  
-- <a id="configjsonAnlegen"></a>Als Nächstes muss im Ordner `config/` eine Datei `config.json` nach Vorlage der `config.example.json` angelegt werden, welche die nötigen Informationen erhält. Zu beachten ist jedoch, dass diese Informationen von den Umgebungsvariablen im `docker-compose.yml` größtenteils überschrieben werden. 
-- Die meisten Einstellungen die das `docker-compose.yml` verwendet werden aus der `.env` Datei geholt, diese muss auch noch manuell erstellt werden. Folgende Werte sollten hierbei gesetzt werden:  
+# Getting Started
+- **Repository kopieren:** 
+
+  Laden Sie das Projekt als ZIP herunter oder klonen Sie es mit:
+   ```
+   git clone https://github.com/Simeon-byte/SmartMeter.git
+   ```
+- **Software installieren:**
+  Führen Sie das Skript `install.sh` aus, um Docker und notwendige Abhängigkeiten automatisch zu installieren.  
+- **Konfiguration:**<a id="configjsonAnlegen"></a>
+  
+  Erstellen Sie im Ordner `config/` eine Datei namens `config.json` (nutzen Sie `config.example.json` als Vorlage). Hier werden die spezifischen Zähler-Informationen hinterlegt. Diese können von Umgebungsvariablen überschrieben werden.
+- **Umgebungsvariablen festlegen:**
+
+  Erstellen Sie eine Datei mit dem Namen `.env` im Hauptverzeichnis. Diese Datei setzt die Passwörter und Ports der Container. Folgende Struktur wird benötigt:  
     ``` 
-    ReaderKey= --Kundenschnittstellen Schlüssel--
+    ReaderKey="KUNDENSCHNITTSTELLEN_SCHLÜSSEL"
     Comport=/dev/ttyUSB0
     mosquittoPort=1883
     nodeRedPort=1880
     influxPort=8086
     grafanaPort=3000
-    grafanaRootPassword="$ecurePasswordGrafana123"
+    grafanaRootPassword="SICHERES_PASSWORT"
 
     influxdbAdminUser="root"
-    influxdbAdminPassword="q^9F1$iE1iX6LCtxzOJLWHVrRHxB@WSkp8p4fYcf"
+    influxdbAdminPassword="SICHERES_PASSWORT"
     influxdbUser="smartmeteruser"
-    influxdbUserPassword="$ecurePasswordInflux123"
+    influxdbUserPassword="SICHERES_PASSWORT"
     influxdbDatabase="SmartMeter"
     ```
-    Diese Werte können individuell angepasst werden, jedoch sollte beachtet werden, dass diese an mehreren Stellen (z.B `grafana_datasource.yml`, `flows.json`, usw.) hartkodiert hinterlegt sind.
-- Nun können die Container mit dem Befehl 
-  ```
-  docker compose up
-  ``` 
-  gestartet werden. Mit `-d` läuft das ganze im Hintergrund.
+    ⚠️ Alle Werte können individuell angepasst werden. Eine Änderung der Ports in der `.env` erfordert jedoch manuelle Anpassungen in den Konfigurationsdateien (z.B `grafana_datasource.yml`, `flows.json`, usw.)
+- **System starten:** 
 
-- Mit folgendem Befehl werden die Container alle wieder gestoppt: 
+  Starten Sie alle Container mit dem Befehl:
+  ```
+  docker compose up -d
+  ``` 
+  Der Parameter `-d` sorgt dafür, dass die Container im Hintergrund weiterlaufen.
+
+- **System stoppen:**
+  Um alle Dienste zu beenden, nutzen Sie:
   ```
   docker compose down
   ```
   
-## <a id="RunPythonStandalone"></a>Pythonskript außerhalb von Docker ausführen
+# <a id="RunPythonStandalone"></a>Skript ohne Docker nutzen
 
-Um das Skript alleine außerhalb eines Dockercontainers auszuführen, muss lediglich wie bereits [vorher](#configjsonAnlegen) beschrieben eine `config.json` Datei erstellt werden. Außerdem müssen die verwendeten Bibliotheken des Pythonskripts auf dem System installiert werden. Dies kann mit dem Befehl `pip install -r requirements.txt` oder dem Ausführen des `setup.sh` Skripts umgesetzt werden.
+Um das Skript eigenständig (außerhalb von Docker) zu nutzen, müssen Sie die erforderlichen Bibliotheken manuell installieren. Dies geschieht über `pip install -r requirements.txt` oder durch Ausführen des `install.sh` Skripts. Stellen Sie sicher, dass die `config.json` wie [oben](#configjsonAnlegen) beschrieben korrekt konfiguriert wurde. 
 
 # Credits
 Originaler [Code](https://github.com/greenMikeEU/SmartMeterEVNKaifaMA309) und [Anleitung](https://www.michaelreitbauer.at/kaifa-ma309-auslesen-smart-meter-evn/) von [greenMikeEU](https://github.com/greenMikeEU).
