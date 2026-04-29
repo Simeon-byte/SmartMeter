@@ -36,8 +36,8 @@ Das Skript `SmartMeterVKW.py` ermöglicht den Zugriff auf den Vorarlberger Smart
 #### Software
 
 - Raspberry Pi OS 32bit (ungetestet für 64bit)
-- Docker und Docker-compose
-    - Diese können entweder manuell oder mithilfe des `install.sh` Skripts installiert werden.
+- Docker
+    - kann entweder manuell oder mithilfe des `install.sh` Skripts installiert werden.
 ## Getting Started
 
 - Installieren Sie die benötigte Software entweder manuell oder mithilfe des `install.sh` Skripts.  
@@ -61,13 +61,13 @@ Das Skript `SmartMeterVKW.py` ermöglicht den Zugriff auf den Vorarlberger Smart
     Diese Werte können individuell angepasst werden, jedoch sollte beachtet werden, dass diese an mehreren Stellen (z.B `grafana_datasource.yml`, `flows.json`, usw.) hartkodiert hinterlegt sind.
 - Nun können die Container mit dem Befehl 
   ```
-  docker-compose up
+  docker compose up
   ``` 
   gestartet werden. Mit `-d` läuft das ganze im Hintergrund.
 
 - Mit folgendem Befehl werden die Container alle wieder gestoppt: 
   ```
-  docker-compose down
+  docker compose down
   ```
   
 ## <a id="RunPythonStandalone"></a>Pythonskript außerhalb von Docker ausführen

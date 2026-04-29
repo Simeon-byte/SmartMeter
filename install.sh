@@ -22,13 +22,6 @@ if ! command -v docker; then
     echo "Finished docker installation."
 fi
 
-# Install docker-compose if not present
-if ! command -v docker-compose; then
-    echo "Installing Docker-compose..."
-    sudo pip3 install docker-compose
-    echo "Finished docker-compose installation."
-fi
-
 if ! [ -d "./data/influxDB"]; then
     mkdir data/influxDB
 fi
